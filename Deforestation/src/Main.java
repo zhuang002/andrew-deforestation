@@ -16,72 +16,27 @@ public class Main {
 			trees[i] = Integer.parseInt(reader.readLine());
 		}
 		
-		// read in all ranges 
+		// preprocess of the trees 
+		int sum = 0;
+		for (int i=0;i<trees.length;i++) {
+			sum += trees[i];
+			trees[i] = sum;
+		}
+		
 		int numRanges = Integer.parseInt(reader.readLine());
-		Range[] ranges = new Range[2*numRanges];
-		for (int i=0; i<numRanges;i++) {
-			String[] sRange = reader.readLine().split(" ");
-			int rangeStart = Integer.parseInt(sRange[0]);
-			int rangeEnd = Integer.parseInt(sRange[1]);
-			
-			Range range = new Range(rangeStart, true, i);
-			ranges[i*2] = range;
-			range = new Range(rangeEnd, false, i);
-			ranges[i*2+1] = range;
-		}
-		
-		reader.close();
-		
-		// sort all ranges 
-		
-		Arrays.sort(ranges, (x,y)->x.range-y.range);
-		
-		// prepare for sums
-		int[] sums = new int[numRanges];
-		for (int i=0;i<sums.length;i++) {
-			sums[i]=0;
-		}
-		boolean[] accumulating = new boolean[numRanges];
 		for (int i=0;i<numRanges;i++) {
-			accumulating[i] = false;
-		}
-		
-		// do sums
-		int rangePoint = 0;
-		for (int i=0;i<numTrees;i++) {
-			// if meet a range, change the state.
-			if (i==ranges[rangePoint].range) {
-				if (ranges[rangePoint].isStart) {
-					accumulating[ranges[rangePoint].index]= true;
-				} else {
-					accumulating[ranges[rangePoint].index] = false;
-				}
-			}
+			String[] sRange = reader.readLine().split(" ");
+			int range1 = Integer.parseInt(sRange[0]);
+			int range2 = Integer.parseInt(sRange[1]);
 			
-			// sum up if the state is in accumulating.
-			for (int j=0;j<numRanges;j++) {
-				if (accumulating[j]) {
-					sums[j]+=trees[i];
-				}
+			if (range1 == 0) {
+				System.out.println(trees[range2]);
+			} else {
+				System.out.println(trees[range2]-trees[range1-1]);
 			}
 		}
 		
-		for (int i=0;i<sums.length;i++) {
-			System.out.println(sums[i]);
-		}
-		
 	}
 
 }
 
-class Range {
-	int range;
-	boolean isStart;
-	int index;
-	
-	public Range(int rg, boolean start, int idx) {
-		this.range = rg;
-		this.isStart = start;
-		this.index = idx;
-	}
-}
